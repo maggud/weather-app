@@ -2,6 +2,8 @@ package com.codetest.main
 
 import com.codetest.main.api.LocationApiService
 import com.codetest.main.model.Location
+import com.codetest.main.model.LocationDto
+import com.codetest.main.model.Status
 import java.util.*
 
 class LocationHelper {
@@ -20,6 +22,24 @@ class LocationHelper {
             }, {
                 callback(null)
             })
+        }
+
+        fun postLocation(
+            id: String? = null,
+            name: String,
+            status: Status,
+            temperature: Int,
+            onError: (Throwable) -> Unit
+        ) {
+            val location = LocationDto(
+                id = id,
+                name = name,
+                status = status.toString(),
+                temperature = temperature
+            )
+            val apiKey = KeyUtil().getKey()
+
+            LocationApiService.getApi().postLocation(apiKey, location, {}, onError)
         }
     }
 }
