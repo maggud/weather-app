@@ -4,4 +4,5 @@
     <string name="error_title">Error</string>
     <string name="error_message">Something went wrong</string>
     <string name="ok">OK</string>
+    <string name="report_weather_btn">Report weather</string>
 </resources>

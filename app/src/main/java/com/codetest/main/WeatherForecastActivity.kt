@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.codetest.R
 import com.codetest.main.model.Location
+import com.codetest.main.model.Status
 import com.codetest.main.ui.LocationViewHolder
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -25,6 +26,18 @@ class WeatherForecastActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
         adapter.notifyDataSetChanged()
+
+        reportWeatherButton.setOnClickListener {
+            // TODO: Add dialog for input
+            LocationHelper.postLocation(
+                id = "TestLocation",
+                name = "Test",
+                status = Status.SUNNY,
+                temperature = 15
+            ) {
+                showError(it.message ?: "")
+            }
+        }
     }
 
     override fun onResume() {
@@ -35,7 +48,7 @@ class WeatherForecastActivity : AppCompatActivity() {
     private fun fetchLocations() {
         LocationHelper.getLocations { response ->
             if (response == null) {
-                showError()
+                showError("Error fetching locations")
             } else {
                 locations = response
                 adapter.notifyDataSetChanged()
@@ -43,10 +56,10 @@ class WeatherForecastActivity : AppCompatActivity() {
         }
     }
 
-    private fun showError() {
+    private fun showError(message: String = "") {
         AlertDialog.Builder(this)
             .setTitle(resources.getString(R.string.error_title))
-            .setMessage(resources.getString(R.string.error_title))
+            .setMessage(message)
             .setPositiveButton(resources.getString(R.string.ok), { _, _ -> })
             .create()
             .show()
