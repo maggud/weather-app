@@ -6,9 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentTransaction
 import com.codetest.R
 import com.codetest.main.model.Location
 import com.codetest.main.model.Status
+import com.codetest.main.ui.AddLocationDialogFragment
 import com.codetest.main.ui.LocationViewHolder
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -28,15 +30,13 @@ class WeatherForecastActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
 
         reportWeatherButton.setOnClickListener {
-            // TODO: Add dialog for input
-            LocationHelper.postLocation(
-                id = "TestLocation",
-                name = "Test",
-                status = Status.SUNNY,
-                temperature = 15
-            ) {
-                showError(it.message ?: "")
-            }
+            supportFragmentManager
+                .beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .let {
+                    AddLocationDialogFragment()
+                        .show(it, null)
+                }
         }
     }
 
