@@ -6,4 +6,9 @@
     <string name="ok">OK</string>
     <string name="report_weather_btn">Report weather</string>
     <string name="add_location_city_name_hint">City name</string>
+    <string name="add_location_status_hint">Status</string>
+    <string name="add_location_temperature_hint">Temperature</string>
+    <string name="add_location_submit_button">Submit</string>
+    <string name="add_location_invalid_input_message">Invalid input. Set a name, status and temperature.</string>
+    <string name="error_fetching_locations">Error fetching locations</string>
 </resources>

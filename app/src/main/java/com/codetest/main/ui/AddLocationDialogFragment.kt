@@ -65,7 +65,7 @@ class AddLocationDialogFragment : DialogFragment() {
             // TODO: Make interface between activity and dialog and trigger error from there.
             Toast.makeText(
                 context,
-                "Invalid input. Set a name, status and temperature.",
+                R.string.add_location_invalid_input_message,
                 Toast.LENGTH_SHORT
             ).show()
         }
