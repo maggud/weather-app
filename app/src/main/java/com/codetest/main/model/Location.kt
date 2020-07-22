@@ -16,7 +16,7 @@ enum class Status(val value: Int) {
     RAINY(0x1F327);
 
     companion object {
-        fun from(string: String): Status = values().first { it.name == string }
+        fun from(string: String): Status? = values().firstOrNull { it.name == string }
     }
 }
 
@@ -33,7 +33,7 @@ class Location(
                 jsonObject.get("id").asString,
                 jsonObject.get("name").asString,
                 jsonObject.get("temperature").asString,
-                Status.from(jsonObject.get("status").asString)
+                Status.from(jsonObject.get("status").asString)!!
             )
         }
     }
