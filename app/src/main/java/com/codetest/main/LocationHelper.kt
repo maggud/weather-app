@@ -34,7 +34,7 @@ class LocationHelper {
             val location = LocationDto(
                 id = id,
                 name = name,
-                status = status.toString(),
+                status = status.name,
                 temperature = temperature
             )
             val apiKey = KeyUtil().getKey()
