@@ -12,15 +12,25 @@ import kotlinx.android.synthetic.main.location.view.*
 
 class LocationViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+    var locationId: String? = null
+    var onDelete: (String) -> Unit = {}
+
     companion object {
         fun create(parent: ViewGroup): LocationViewHolder {
             val inflater = LayoutInflater.from(parent.context)
             val view = inflater.inflate(R.layout.location, parent, false)
-            return LocationViewHolder(view)
+            return LocationViewHolder(view).also { viewHolder ->
+                viewHolder.itemView.setOnClickListener {
+                    viewHolder.locationId?.let { id ->
+                        viewHolder.onDelete(id)
+                    }
+                }
+            }
         }
     }
 
     fun setup(location: Location) {
+        locationId = location.id
         itemView.card.setCardBackgroundColor(getColor(location.status))
         itemView.name.text = location.name
         val weather = location.temperature + "°C " + String(Character.toChars(location.status.value))
