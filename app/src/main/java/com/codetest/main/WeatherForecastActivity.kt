@@ -45,7 +45,7 @@ class WeatherForecastActivity : AppCompatActivity() {
         fetchLocations()
     }
 
-    private fun fetchLocations() {
+    fun fetchLocations() {
         LocationHelper.getLocations { response ->
             if (response == null) {
                 showError(getString(R.string.error_fetching_locations))

@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.codetest.R
 import com.codetest.main.LocationHelper
+import com.codetest.main.WeatherForecastActivity
 import com.codetest.main.model.Status
 import kotlinx.android.synthetic.main.dialog_add_location.*
 
@@ -50,17 +51,22 @@ class AddLocationDialogFragment : DialogFragment() {
             statusDropdown.text.toString().takeIf { it.isNotBlank() }?.let { Status.from(it) }
 
         if (cityName != null && temperature != null && status != null) {
+            submitButton.isEnabled = false
             LocationHelper.postLocation(
                 name = cityName,
                 temperature = temperature,
-                status = status
-            ) { error ->
-                context?.let { context ->
-                    Toast.makeText(context, error.localizedMessage, Toast.LENGTH_SHORT).show()
+                status = status,
+                onSuccess = {
+                    (activity as? WeatherForecastActivity)?.fetchLocations()
+                    dismiss()
+                },
+                onError = { error ->
+                    context?.let { context ->
+                        Toast.makeText(context, error.localizedMessage, Toast.LENGTH_SHORT).show()
+                    }
+                    submitButton.isEnabled = true
                 }
-            }
-            // TODO: Make interface between activity and dialog so we can fetch new locations.
-            dismiss()
+            )
         } else {
             // TODO: Make interface between activity and dialog and trigger error from there.
             Toast.makeText(

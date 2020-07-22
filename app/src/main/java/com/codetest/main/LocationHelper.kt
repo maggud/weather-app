@@ -29,6 +29,7 @@ class LocationHelper {
             name: String,
             status: Status,
             temperature: Int,
+            onSuccess: () -> Unit = {},
             onError: (Throwable) -> Unit
         ) {
             val location = LocationDto(
@@ -39,7 +40,7 @@ class LocationHelper {
             )
             val apiKey = KeyUtil().getKey()
 
-            LocationApiService.getApi().postLocation(apiKey, location, {}, onError)
+            LocationApiService.getApi().postLocation(apiKey, location, onSuccess, onError)
         }
     }
 }
