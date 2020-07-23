@@ -12,8 +12,7 @@ class LocationHelper {
 
         fun getLocations(callback: (List<Location>?) -> Unit) {
             val locations: ArrayList<Location> = arrayListOf()
-            val apiKey = KeyUtil().getKey()
-            LocationApiService.getApi().get(apiKey, "locations", {
+            LocationApiService.getApi().get("locations", {
                 val list = it.get("locations").asJsonArray
                 for (json in list) {
                     locations.add(Location.from(json.asJsonObject))
@@ -38,9 +37,8 @@ class LocationHelper {
                 status = status.name,
                 temperature = temperature
             )
-            val apiKey = KeyUtil().getKey()
 
-            LocationApiService.getApi().postLocation(apiKey, location, onSuccess, onError)
+            LocationApiService.getApi().postLocation(location, onSuccess, onError)
         }
     }
 }

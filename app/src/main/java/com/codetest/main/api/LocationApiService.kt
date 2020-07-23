@@ -1,5 +1,6 @@
 package com.codetest.main.api
 
+import com.codetest.main.KeyUtil
 import com.codetest.main.model.LocationDto
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
@@ -50,8 +51,8 @@ class LocationApiService {
         api = retrofit.create(LocationApi::class.java)
     }
 
-    fun get(apiKey: String, url: String, success: (JsonObject) -> Unit, error: (String?) -> Unit) {
-        api.get(apiKey, url)
+    fun get(url: String, success: (JsonObject) -> Unit, error: (String?) -> Unit) {
+        api.get(KeyUtil.getKey(), url)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
@@ -65,12 +66,11 @@ class LocationApiService {
     }
 
     fun postLocation(
-        apiKey: String,
         location: LocationDto,
         success: () -> Unit,
         error: (Throwable) -> Unit
     ) {
-        api.postLocation(apiKey, location)
+        api.postLocation(KeyUtil.getKey(), location)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
