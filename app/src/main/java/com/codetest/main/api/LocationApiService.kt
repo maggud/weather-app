@@ -15,9 +15,11 @@ import retrofit2.adapter.rxjava2.Result
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Url
 
 interface LocationApi {
@@ -28,6 +30,12 @@ interface LocationApi {
     fun postLocation(
         @Header("X-Api-Key") apiKey: String,
         @Body location: LocationDto
+    ): Single<Result<Void>>
+
+    @DELETE("locations/{id}")
+    fun deleteLocation(
+        @Header("X-Api-Key") apiKey: String,
+        @Path("id") id: String
     ): Single<Result<Void>>
 }
 
@@ -71,6 +79,20 @@ class LocationApiService {
         error: (Throwable) -> Unit
     ) {
         api.postLocation(KeyUtil.getKey(), location)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+                onSuccess = { success() },
+                onError = ::error
+            )
+    }
+
+    fun deleteLocation(
+        locationId: String,
+        success: () -> Unit,
+        error: (Throwable) -> Unit
+    ) {
+        api.deleteLocation(KeyUtil.getKey(), locationId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(

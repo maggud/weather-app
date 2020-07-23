@@ -40,5 +40,13 @@ class LocationHelper {
 
             LocationApiService.getApi().postLocation(location, onSuccess, onError)
         }
+
+        fun deleteLocation(
+            id: String,
+            onSuccess: () -> Unit = {},
+            onError: (Throwable) -> Unit
+        ) {
+            LocationApiService.getApi().deleteLocation(id, onSuccess, onError)
+        }
     }
 }

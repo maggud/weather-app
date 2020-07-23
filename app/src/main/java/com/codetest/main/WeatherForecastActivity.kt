@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
 import com.codetest.R
 import com.codetest.main.model.Location
@@ -71,7 +72,19 @@ class WeatherForecastActivity : AppCompatActivity() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            return LocationViewHolder.create(parent)
+            return LocationViewHolder.create(parent).also {
+                it.onDelete = { id ->
+                    LocationHelper.deleteLocation(
+                        id = id,
+                        onSuccess = {
+                            fetchLocations()
+                        },
+                        onError = {
+                            Toast.makeText(this@WeatherForecastActivity, "Failed to delete. Please try again.", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                }
+            }
         }
 
         override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
