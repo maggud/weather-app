@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.lifecycleScope
 import com.codetest.R
 import com.codetest.main.model.Location
 import com.codetest.main.model.Status
@@ -58,12 +59,14 @@ class WeatherForecastActivity : AppCompatActivity() {
     }
 
     private fun showError(message: String = "") {
-        AlertDialog.Builder(this)
-            .setTitle(resources.getString(R.string.error_title))
-            .setMessage(message)
-            .setPositiveButton(resources.getString(R.string.ok), { _, _ -> })
-            .create()
-            .show()
+        lifecycleScope.launchWhenResumed {
+            AlertDialog.Builder(this@WeatherForecastActivity)
+                .setTitle(resources.getString(R.string.error_title))
+                .setMessage(message)
+                .setPositiveButton(resources.getString(R.string.ok), { _, _ -> })
+                .create()
+                .show()
+        }
     }
 
     private inner class ListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
