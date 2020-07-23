@@ -21,6 +21,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Url
+import java.util.concurrent.TimeUnit
 
 interface LocationApi {
     @GET
@@ -51,7 +52,12 @@ class LocationApiService {
     init {
         val retrofit = Retrofit.Builder()
             .baseUrl("https://app-code-test.kry.pet/")
-                .client(OkHttpClient().newBuilder().build())
+                .client(
+                    OkHttpClient().newBuilder()
+                        .readTimeout(3, TimeUnit.SECONDS)
+                        .writeTimeout(3, TimeUnit.SECONDS)
+                        .build()
+                )
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().setLenient().create()))
             .build()
