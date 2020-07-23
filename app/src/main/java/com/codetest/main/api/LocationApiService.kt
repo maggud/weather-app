@@ -1,5 +1,6 @@
 package com.codetest.main.api
 
+import com.codetest.main.KeyUtil
 import com.codetest.main.model.LocationDto
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
@@ -14,9 +15,11 @@ import retrofit2.adapter.rxjava2.Result
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Url
 
 interface LocationApi {
@@ -27,6 +30,12 @@ interface LocationApi {
     fun postLocation(
         @Header("X-Api-Key") apiKey: String,
         @Body location: LocationDto
+    ): Single<Result<Void>>
+
+    @DELETE("locations/{id}")
+    fun deleteLocation(
+        @Header("X-Api-Key") apiKey: String,
+        @Path("id") id: String
     ): Single<Result<Void>>
 }
 
@@ -50,8 +59,8 @@ class LocationApiService {
         api = retrofit.create(LocationApi::class.java)
     }
 
-    fun get(apiKey: String, url: String, success: (JsonObject) -> Unit, error: (String?) -> Unit) {
-        api.get(apiKey, url)
+    fun get(url: String, success: (JsonObject) -> Unit, error: (String?) -> Unit) {
+        api.get(KeyUtil.getKey(), url)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(
@@ -65,12 +74,25 @@ class LocationApiService {
     }
 
     fun postLocation(
-        apiKey: String,
         location: LocationDto,
         success: () -> Unit,
         error: (Throwable) -> Unit
     ) {
-        api.postLocation(apiKey, location)
+        api.postLocation(KeyUtil.getKey(), location)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeBy(
+                onSuccess = { success() },
+                onError = ::error
+            )
+    }
+
+    fun deleteLocation(
+        locationId: String,
+        success: () -> Unit,
+        error: (Throwable) -> Unit
+    ) {
+        api.deleteLocation(KeyUtil.getKey(), locationId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeBy(

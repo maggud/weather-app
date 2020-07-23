@@ -2,27 +2,23 @@ package com.codetest.main
 
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
+import androidx.core.content.edit
 import com.codetest.CodeTestApplication
 import java.util.*
 
-class KeyUtil {
+object KeyUtil {
 
-    companion object {
-        const val KEY = "api_key"
-    }
+    private const val KEY = "api_key"
 
-    private fun preferences(): SharedPreferences =
+    private val preferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(CodeTestApplication.appContext())
 
     fun getKey(): String {
-        preferences().getString(KEY, null)?.let {
+        preferences.getString(KEY, null)?.let {
             return it
-        } ?: kotlin.run {
+        } ?: run {
             val apiKey = UUID.randomUUID().toString()
-            preferences()
-                .edit()
-                .putString(KEY, apiKey)
-                .apply()
+            preferences.edit { putString(KEY, apiKey) }
             return apiKey
         }
     }
