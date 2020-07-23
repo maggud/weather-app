@@ -20,7 +20,7 @@ enum class Status(val value: Int) {
     }
 }
 
-class Location(
+data class Location(
     val id: String?,
     val name: String?,
     val temperature: String?,
