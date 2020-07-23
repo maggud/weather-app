@@ -11,7 +11,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.lifecycleScope
 import com.codetest.R
 import com.codetest.main.model.Location
-import com.codetest.main.model.Status
 import com.codetest.main.ui.AddLocationDialogFragment
 import com.codetest.main.ui.LocationViewHolder
 import kotlinx.android.synthetic.main.activity_main.*
@@ -40,21 +39,29 @@ class WeatherForecastActivity : AppCompatActivity() {
                         .show(it, null)
                 }
         }
+
+        swipeRefresh.setOnRefreshListener {
+            fetchLocations()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        fetchLocations()
+        fetchLocations(true)
     }
 
-    fun fetchLocations() {
+    fun fetchLocations(backgroundRefresh: Boolean = false) {
+        swipeRefresh.isRefreshing = true
         LocationHelper.getLocations { response ->
             if (response == null) {
-                showError(getString(R.string.error_fetching_locations))
+                if (!backgroundRefresh) {
+                    showError(getString(R.string.error_fetching_locations))
+                }
             } else {
                 locations = response
                 adapter.notifyDataSetChanged()
             }
+            swipeRefresh.isRefreshing = false
         }
     }
 
@@ -63,7 +70,8 @@ class WeatherForecastActivity : AppCompatActivity() {
             AlertDialog.Builder(this@WeatherForecastActivity)
                 .setTitle(resources.getString(R.string.error_title))
                 .setMessage(message)
-                .setPositiveButton(resources.getString(R.string.ok), { _, _ -> })
+                .setPositiveButton(R.string.retry) { _, _ -> fetchLocations() }
+                .setNeutralButton(resources.getString(R.string.ok)) { _, _ -> }
                 .create()
                 .show()
         }
